@@ -1,17 +1,4 @@
-#i!/usr/bin/env python
-# encoding: utf-8
-
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-# 
-#     http://www.apache.org/licenses/LICENSE-2.0
-# 
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+#!/usr/bin/env python
 
 # author: akshshar 
 # https://github.com/akshshar/qoson
@@ -77,8 +64,6 @@ def register():
 
         global sharedClientQueue
         #Pushing to the Netmon Scheduler appQueue using the sharedAppQueue
-        print "\n\n\n Object being put inside Queue\n\n"
-        print registerDataObj
         sharedClientQueue.put(registerDataObj)
         response = {"result" : "success", "msg" : registerJson}  
     except Exception as e:
@@ -145,7 +130,6 @@ if __name__=='__main__':
 
     websrvr = Process(target=startRestServer, args=())
     websrvr.start()
-#    startRestServer()
     # set up logging
     numeric_log_level = getattr(logging, args.log[0], None)
 

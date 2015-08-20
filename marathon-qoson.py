@@ -22,8 +22,7 @@ httplib.HTTPConnection.debuglevel = 1
 
 LAN_URL="http://192.168.122.1"
 
-#QOSON_URL=LAN_URL+":6060"
-QOSON_URL="http://192.168.122.29:6060"
+QOSON_URL=LAN_URL+":6060"
 MARATHON_URL=LAN_URL+":8080"
 INTERVAL = 10
 
@@ -85,16 +84,20 @@ def pretty_print_POST(req):
 
 def register():
     #Construct the json data for registration
-    registerData = {}
-    registerData['name'] = "marathon-qoson-client"
-    registerData['url'] = "http://192.168.122.1:9090/constraint"
-    registerData['method'] = "GET"
-    registerData['data'] = ""
-    registerData['header'] = {"Content-Type": "application/json"}
-    registerData["network_role"] = "tor"
+    try:
+        registerData = {}
+        registerData['name'] = "marathon-qoson-client"
+        registerData['url'] = LAN_URL+":9090/constraint"
+        registerData['method'] = "GET"
+        registerData['data'] = ""
+        registerData['header'] = {"Content-Type": "application/json"}
+        registerData["network_role"] = "tor"
 
- 
-    requests.post(QOSON_URL+"/register", headers=registerData['header'], data=json.dumps(registerData))
+        requests.post(QOSON_URL+"/register", headers=registerData['header'], data=json.dumps(registerData))
+    except Exception as e:
+        print "Unable to Register with QoSon"
+        print e
+
 
 app = Flask(__name__)
 

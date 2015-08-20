@@ -1,20 +1,7 @@
 #!/usr/bin/env python
 
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# author: akshshar 
+# https://github.com/akshshar/qoson
 
 import sys
 import threading
@@ -36,19 +23,15 @@ class NetmonExecutor(mesos.interface.Executor):
         def run_task():
             print "Running task %s" % task.task_id.value
 
-        # Perform the network monitoring task based on task labels             
-#            p = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, 
-#                                 stderr=subprocess.PIPE)
-#            out, err = p.communicate()
 
             # The list of parameters to monitor on the network device are provided via the task labels
       	    # The First task label (task.labels.labels[0]) signifies the app_ID for the app launched on Marathon
                 # key = 'app_id', value = actual app_id from Marathon 
-   	    # The second task label (task.labels.labels[1]) signifies the tool to be used to fetch telemetry data
+       	    # The second task label (task.labels.labels[1]) signifies the tool to be used to fetch telemetry data
                 # key = 'tool', value = 'iperf', 'streaming_telemetry', 'netflow' etc.
-   	    # The next set of labels (task.labels.labels[2]+) signifies the list of key-value pairs such as
-   	    # Available_Bandwidth, Jitter, Packet loss etc., that a telemetry agent/receiver run by the executor can 
-   	    # use as thresholds to compare and respond to.
+   	        # The next set of labels (task.labels.labels[2]+) signifies the list of key-value pairs such as
+    	    # Available_Bandwidth, Jitter, Packet loss etc., that a telemetry agent/receiver run by the executor can 
+       	    # use as thresholds to compare and respond to.
 
        	    # param_dict is meant to be a dictionary representation of task.labels.labels[2]+
 
@@ -89,8 +72,6 @@ class NetmonExecutor(mesos.interface.Executor):
             # values from result minus the verdict.
 
             del result['verdict']
-#            for tag in env_tags:
-#                update.labels.labels.add(key = tag, value = label_dict[tag])
 
             update.labels.labels.extend(task.labels.labels)          
             for tag in result.keys():

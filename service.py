@@ -1,20 +1,7 @@
 #!/usr/bin/env python
 
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# author: akshshar 
+# https://github.com/akshshar/qoson
 
 import os, sys, time, pdb, Queue, requests, threading 
 import mesos.interface
@@ -22,9 +9,6 @@ from mesos.interface import mesos_pb2
 import mesos.native
 import netmon
 
-#class client():
-#    def __init__(self):
-#        self.clientDict = {}
 
 class registerData():
     def __init__(self, name, url, method, data, header, role):
@@ -74,29 +58,21 @@ class NetmonScheduler(mesos.interface.Scheduler):
         """ Method that runs forever to accept clients"""
         while True:
             if not self.clientQueue.empty():
-                print "\n\nclient Queue is not empty!!\n\n"
                 clientObj= self.clientQueue.get()   
-                print "\n\nClient OBJ received is \n\n"
-                print clientObj
                 self.clientDict[clientObj.role] = clientObj 
-                print "\n\nclient Dict is now \n\n\n"
-                print self.clientDict
             time.sleep(self.interval)
+
 
     def registered(self, driver, frameworkId, masterInfo):
         print "Registered with framework ID %s" % frameworkId.value
+
 
     def resourceOffers(self, driver, offers):
         appDatarcvd = None 
        # Pop the last app_id and launch a monitoring task on  every valid slave                                                                                                          
 
-        print "\n\n\nClient Dict is \n\n\n"
-        print self.clientDict
         if not self.appQueue.empty():                                                                                                                                           
-            print "Queue is not empty!!"
             appDatarcvd = self.appQueue.get()                                                                                                                                   
-            print "\n\n app_id received is"
-            print appDatarcvd.app_id
         for offer in offers:
             tasks = []
             offerCpus = 0
@@ -116,9 +92,6 @@ class NetmonScheduler(mesos.interface.Scheduler):
                 print "Received attribute with name: %s, value: %s" \
                     % (attribute.name, attribute.text.value)
 
-#                if attribute.name == "device-role" and attribute.text.value == "gw":
-#                    isMonitoringDevice = True 
-
                 if attribute.name == "device-type" and attribute.text.value =="network":
                     isMonitoringDevice = True
 
@@ -128,23 +101,14 @@ class NetmonScheduler(mesos.interface.Scheduler):
                 if attribute.name == "rack":             
                     rack = attribute.text.value
            
-            #netmon_context = netmon.createNetworkMonitoringTask(netmon_attrl, offer.slave_id.value)
-            #if (netmon_context != None):
-            #    isMonitoringDevice = True
-
             print "Received offer %s with cpus: %s and mem: %s" \
                   % (offer.id.value, offerCpus, offerMem)
 
-#            remainingCpus = offerCpus
-#            remainingMem = offerMem
 
             if isMonitoringDevice == 1:
                 launch_task = 0
-#                print "\n\n\n Monitoring device detected \n\n\n"
 
-                #pdb.set_trace()                 
                 if appDatarcvd != None:
-                    #pdb.set_trace()
                     if  appDatarcvd.app_id in self.appDatadict:
                         if offer.slave_id.value not in self.appDatadict[appDatarcvd.app_id].slaves:
                             # launch monitoring tasks for apps uniquely on individual slaves#
@@ -186,23 +150,20 @@ class NetmonScheduler(mesos.interface.Scheduler):
                     mem.scalar.value = self._mem_alloc 
 
                     tasks.append(task)
-                    #self.taskData[task.task_id.value] = (
-                    #offer.slave_id, task.executor.executor_id)
 
-#                    remainingCpus = 0
-#                    remainingMem = 0
-                    #pdb.set_trace()
                     if mem.scalar.value <= offerCpus and mem.scalar.value <= offerMem: 
                         driver.launchTasks([offer.id], tasks, self._offer_timeout)
+
             driver.declineOffer(offer.id, self._offer_timeout)
  
+
+
     def statusUpdate(self, driver, update):
         print "Task %s is in state %s" % \
             (update.task_id.value, mesos_pb2.TaskState.Name(update.state))
  
         if update.state == mesos_pb2.TASK_RUNNING:
             print "Process the monitoring task verdict"
-            #pdb.set_trace()
             if update.data == "True":
                 app_id = update.labels.labels[0].value 
                 tid = update.task_id.value

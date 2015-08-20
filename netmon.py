@@ -1,36 +1,15 @@
 #!/usr/bin/env python
 
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# author: akshshar 
+# https://github.com/akshshar/qoson
 
 import os
 import sys
 import time
 import urllib2
-#import controller
 import subprocess
 
-ODL_APP_URL = "http://localhost:6302"
-PEER_ID = "10.2.0.3"
 SAMPLE_INTERVAL = 5
-TARGET_BPS = 5.2 * 1024 * 1024 
-
-NETWORK_MONITORING_CMD ="iperf -c %s -t %d -i %d -u -y C" % \
-                        (PEER_ID, SAMPLE_INTERVAL, SAMPLE_INTERVAL)
-
 
 class Netmon(object):
     def __init__(self, param_dict):
@@ -70,12 +49,12 @@ class Netmon(object):
         # The destination parameter for iperf client may be provided by the app itself.
         # For now, we assume a configuration management tool sets up the environment variables.
 
-#        if not os.getenv("IPERF_SERVER"):
-#            print "Expecting IPERF_SERVER in the environment"
-#            sys.exit(1);
+        if not os.getenv("IPERF_SERVER"):
+            print "Expecting IPERF_SERVER in the environment"
+            sys.exit(1);
 
-#        server = os.getenv('IPERF_SERVER')
-        server="10.2.0.3"
+        server = os.getenv('IPERF_SERVER')
+
         if os.getenv("IPERF_INTERVAL"):
             interval = os.getenv("IPERF_INTERVAL")
         else:
