@@ -1,0 +1,28 @@
+{
+  "id": "test",
+  "cmd": "python -m SimpleHTTPServer $PORT0",
+  "cpus": 0.5,
+  "mem": 1,
+  "instances": 1,
+  "healthChecks": [
+    {
+      "protocol": "HTTP",
+      "portIndex": 0,
+      "path": "/",
+      "gracePeriodSeconds": 5,
+      "intervalSeconds": 20,
+      "maxConsecutiveFailures": 3
+    }
+  ],
+  "networkResources":
+   {
+       "bandwidth": "400.0",
+       "pktloss": "2",
+       "jitter": "0.8",
+       "tool": "iperf"
+   },      
+  "ports": [4000],
+  "constraints": [
+        ["device-type", "LIKE", "server"]
+    ]
+}
